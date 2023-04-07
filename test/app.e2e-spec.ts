@@ -62,7 +62,8 @@ describe('App  e2e', function () {
           .spec()
           .post('/auth/signin')
           .withBody(dto)
-          .expectStatus(200);
+          .expectStatus(200)
+          .stores('userAt', 'access_token');
       });
       it('should throw if email empty', () => {
         return pactum
@@ -84,14 +85,24 @@ describe('App  e2e', function () {
     });
   });
   describe('User', function () {
-    describe('Get me', function () {});
+    describe('Get me', function () {
+      it('should get current user', () => {
+        return pactum
+          .spec()
+          .get('/users/me')
+          .withHeaders({
+            Authorization: `Bearer $S{userAt}`,
+          })
+          .expectStatus(200);
+      });
+    });
     describe('Edit user', function () {});
   });
   describe('Bookmark', function () {
     describe('Create bookmark', function () {});
     describe('Get all bookmarks', function () {});
     describe('Get bookmark by id', function () {});
-    describe('Edit bookmark', function () {});
-    describe('Delete bookmark', function () {});
+    describe('Edit bookmark by id', function () {});
+    describe('Delete bookmark by id', function () {});
   });
 });
